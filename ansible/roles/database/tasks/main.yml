@@ -1,0 +1,19 @@
+- name: Install percona
+  apt: name=percona-xtradb-cluster-server update_cache=yes state=latest
+
+- name: Stop all nodes
+  command: service mysql stop
+
+- name: Configure mysql
+  copy: src=my.cnf dest=/etc/mysql/my.cnf
+
+- name: Configure replication
+  template: src=wsrep.cnf.j2 dest=/etc/mysql/conf.d/wsrep.cnf
+
+- name: Start bootstrap-pxc
+  command: service mysql bootstrap-pxc
+  when: ansible_eth0["ipv4"]["address"] == hostvars[hostvars.keys()[0]].ansible_default_ipv4.address
+
+- name: Start nodes
+  command: service mysql start
+  when: ansible_eth0["ipv4"]["address"] != hostvars[hostvars.keys()[0]].ansible_default_ipv4.address

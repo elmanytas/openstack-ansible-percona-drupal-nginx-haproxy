@@ -1,0 +1,7 @@
+- name: restart httpd
+  service: name=httpd state=restarted
+  ignore_errors: yes
+
+- name: reload httpd
+  service: name=httpd state=reloaded
+  ignore_errors: yes

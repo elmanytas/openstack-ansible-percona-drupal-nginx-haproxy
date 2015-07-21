@@ -1,0 +1,31 @@
+- name: Install and Configure Database Cluster
+  hosts: database
+  remote_user: ubuntu
+  sudo: yes
+  roles:
+  - base
+  - database
+
+- name: Install and Configure Drupal
+  hosts: drupal
+  remote_user: ubuntu
+  sudo: yes
+  roles:
+  - base
+
+- name: Install and Configure Nginx
+  hosts: nginx
+  remote_user: ubuntu
+  sudo: yes
+  roles:
+  - base
+
+- name: Install and Configure Balancer
+  hosts: balancer
+  remote_user: ubuntu
+  sudo: yes
+  roles:
+  - base
+#  - balancer
+
+
