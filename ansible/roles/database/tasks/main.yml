@@ -10,10 +10,20 @@
 - name: Configure replication
   template: src=wsrep.cnf.j2 dest=/etc/mysql/conf.d/wsrep.cnf
 
-- name: Start bootstrap-pxc
+# ¡Only fordeployment and testing!
+# This way could break your cluster if bootstrap node is not the last when shutting down the cluster.
+- name: Start bootstrap-pxc and allow all from all as root
   command: service mysql bootstrap-pxc
   when: ansible_eth0["ipv4"]["address"] == hostvars[hostvars.keys()[0]].ansible_default_ipv4.address
 
-- name: Start nodes
+- name: Start nodes and allow all from all as root
   command: service mysql start
   when: ansible_eth0["ipv4"]["address"] != hostvars[hostvars.keys()[0]].ansible_default_ipv4.address
+
+# Allow all from all as root
+- name: Install python-mysqldb
+  apt: name=python-mysqldb
+
+- name: Allow all from all as root
+  mysql_user: name=root password="" host=% priv=*.*:ALL state=present
+  when: ansible_eth0["ipv4"]["address"] == hostvars[hostvars.keys()[0]].ansible_default_ipv4.address

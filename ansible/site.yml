@@ -4,7 +4,7 @@
   sudo: yes
   roles:
   - base
-  - database
+#  - database
 
 - name: Install and Configure Drupal
   hosts: drupal
@@ -12,6 +12,7 @@
   sudo: yes
   roles:
   - base
+  - cms
 
 - name: Install and Configure Nginx
   hosts: nginx
@@ -19,6 +20,7 @@
   sudo: yes
   roles:
   - base
+  - nginx
 
 - name: Install and Configure Balancer
   hosts: balancer
@@ -26,6 +28,6 @@
   sudo: yes
   roles:
   - base
-#  - balancer
+  - balancer
 
 

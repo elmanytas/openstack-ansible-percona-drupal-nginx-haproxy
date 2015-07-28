@@ -1,0 +1,13 @@
+upstream 192.168.32.34 {
+{% for host in groups['drupal'] %}
+    server {{ hostvars[host].ansible_default_ipv4.address }}:80 max_fails=2 fail_timeout=2s;
+{% endfor %}
+}
+
+server {
+    listen 80;
+    server_name {{ ansible_default_ipv4.address }};
+    location / {
+        proxy_pass http://192.168.32.34/;
+    }
+}

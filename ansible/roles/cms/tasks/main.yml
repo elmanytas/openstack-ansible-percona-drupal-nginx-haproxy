@@ -1,0 +1,53 @@
+- name: Upgrade distribution
+  apt: update_cache=yes upgrade=dist
+
+- name: Install haproxy
+  apt: name=haproxy
+
+- name: Configure haproxy
+  template: src=haproxy.cfg.j2 dest=/etc/haproxy/haproxy.cfg
+
+- name: Configure haproxy autostart
+  copy: src=etc_default_haproxy dest=/etc/default/haproxy
+
+- name: Start the haproxy service
+  service: name=haproxy state=started enabled=yes
+
+- name: Install drupal
+  apt: name=drupal7 update_cache=yes state=latest install_recommends=no
+
+# Create a new database with name 'drupal7'
+- name: Install python-mysqldb
+  apt: name=python-mysqldb
+
+- mysql_db: login_user=root login_password="" login_host=127.0.0.1 name=drupal7 state=present
+
+#https://www.digitalocean.com/community/tutorials/how-to-configure-apache-using-ansible-on-ubuntu-14-04
+- name: Configure drupal site
+  template: src=drupal.conf.j2 dest=/etc/apache2/sites-available/drupal.conf
+
+- name: Configure drupal app
+  copy: src=dbconfig.php dest=/etc/drupal/7/sites/default/dbconfig.php
+
+#- name: Enabled mod_rewrite
+#  apache2_module: name=rewrite state=present
+#  notify:
+#  - restart apache2
+- name: Enable mod_rewrite
+  command: a2enmod rewrite
+  args:
+    creates: /etc/apache2/mods-enabled/rewrite.load
+  notify:
+  - restart apache2
+
+- name: a2ensite drupal
+  command: a2ensite drupal
+  args:
+    creates: /etc/apache2/sites-enabled/drupal.conf
+  notify:
+  - restart apache2
+
+# Load initial database if not exists
+#- shell: mysql -h 127.0.0.1 -u root drupal7 -e 'show tables' | wc -l
+#  register: number_of_tables
+#  ignore_errors: True

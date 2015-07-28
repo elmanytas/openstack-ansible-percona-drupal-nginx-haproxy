@@ -1,0 +1,19 @@
+<VirtualHost {{ ansible_default_ipv4.address }}:80>
+
+  ErrorLog /var/log/apache2/drupal_error.log
+  LogLevel warn
+  CustomLog /var/log/apache2/drupal_access.log combined
+
+  DirectoryIndex index.php index.html index.htm
+
+  DocumentRoot /usr/share/drupal7/
+
+  <Directory /usr/share/drupal7/>
+    Options +FollowSymLinks
+    AllowOverride All
+    order allow,deny
+    allow from all
+  </Directory>
+
+</VirtualHost>
+

@@ -1,0 +1,8 @@
+- name: restart haproxy
+  service: name=haproxy state=restarted
+
+- name: reload haproxy
+  service: name=haproxy state=reloaded
+
+- name: restart apache2
+  service: name=apache2 state=restarted
