@@ -1,5 +1,5 @@
 - name: Install and Configure Database Cluster
-  hosts: database
+  hosts: percona
   remote_user: ubuntu
   sudo: yes
   roles:
@@ -23,7 +23,7 @@
   - nginx
 
 - name: Install and Configure Balancer
-  hosts: balancer
+  hosts: haproxy
   remote_user: ubuntu
   sudo: yes
   roles:
